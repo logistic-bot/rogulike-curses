@@ -2,21 +2,21 @@
 # render call
 class Engine
   def initialize(renderer=nil, state=nil)
-    if renderer == nil
-      @renderer = CursesRenderer.new
-    else
-      @renderer = renderer
-    end
-
     if state == nil
-      @state = State
+      @state = State.new
     else
       @state = state
+    end
+
+    if renderer == nil
+      @renderer = CursesRenderer.new(@state)
+    else
+      @renderer = renderer
     end
   end
 
   def render
-    @renderer.render(@state)
+    @renderer.render()
   end
 
   def handle_input_events
@@ -30,6 +30,7 @@ class Engine
   end
 
   def main_loop
+    debug("Starting main loop")
     begin
       while true
         render
@@ -37,6 +38,8 @@ class Engine
         sleep 0.0003
       end
     ensure
+      debug("Programm exit!!")
+      debug("Cleanup")
       @renderer.cleanup
     end
   end

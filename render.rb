@@ -1,18 +1,5 @@
-DEBUG_MODE = true
-DEBUG_LOG = true
-DEBUG_MESSAGE = true
-
-MAX_MESSAGES = 10
-
-class NullRenderer
-  def render(state)
-    pass
-  end
-end
-
-
 class CursesRenderer
-  def initialize
+  def initialize(state)
     noecho()
     init_screen()
     start_color()
@@ -25,6 +12,8 @@ class CursesRenderer
 
     @screen_update_required = true
     @last_screen_update = Time.now
+
+    @state = state
   end
 
   def get_input
@@ -36,34 +25,15 @@ class CursesRenderer
   end
 
   def debug(text)
-    if DEBUG_MODE
-      if DEBUG_MESSAGE
-        message("[dbg]> " + text)
-      end
-      if DEBUG_LOG
-        debug_log(text)
-      end
-    end
+    @state.debug(text)
   end
 
   def message(text)
-    if $messages.last == text
-      $messages_count[-1] += 1
-    else
-      $messages << text
-      $messages_count << 1
-    end
-
-    if $messages.length > MAX_MESSAGES
-      $messages = $messages.drop(1)
-      $messages_count = $messages_count.drop(1)
-    end
-
-    @screen_update_required = true
+    @state.message(text)
   end
-  
-  def render(state)
-    if @screen_update_required
+
+  def render()
+    if @state.screen_update_required
       true_render
     else
       delta = Time.now - @last_screen_update
@@ -85,7 +55,7 @@ class CursesRenderer
 
     refresh
 
-    @screen_update_required = false
+    @state.screen_update_required = false
     @last_screen_update = Time.now
   end
 
@@ -102,16 +72,16 @@ class CursesRenderer
     Curses.attrset(Curses.color_pair(1) | Curses::A_BOLD)
 
     # revering the order of messages
-    tmp_messages = $messages
+    tmp_messages = @state.current_messages
     tmp_messages.reverse
-    tmp_counts = $messages_count
+    tmp_counts = @state.current_messages_count
     tmp_counts.reverse
 
     # preparing index
     index = 0
     
     # going to the right place
-    setpos(nb_lines-$messages.length, 0)
+    setpos(nb_lines-tmp_messages.length, 0)
 
     # we loop throught the messages
     for message in tmp_messages
@@ -119,7 +89,7 @@ class CursesRenderer
         # if we have 1 message, we don't show the number
         addstr(message + "\n")
       else
-        addstr(message + " (#{$messages_count[index]} times)\n")
+        addstr(message + " (#{@state.current_messages_count[index]} times)\n")
         # if we have more than 1, we do
       end
 
@@ -142,11 +112,8 @@ class CursesRenderer
         addstr("#{tmp_messages.last} (#{tmp_counts.last} times)\n")
       end
     end
-   
+    
     # we reset the color
     Curses.attrset(Curses.color_pair(0) | Curses::A_NORMAL)
-  end
-
-  def debug_log(text) # TODO
   end
 end
