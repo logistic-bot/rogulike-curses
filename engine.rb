@@ -30,7 +30,7 @@ class Engine
   end
 
   def main_loop
-    debug("Starting main loop")
+    info("Starting main loop")
     begin
       while true
         render
@@ -38,9 +38,15 @@ class Engine
         sleep 0.0003
       end
     ensure
-      debug("Programm exit!!")
+      info("Programm exit!!")
       debug("Cleanup")
       @renderer.cleanup
+
+      pp self
     end
+  end
+
+  def info(text)
+    @renderer.info(text)
   end
 end

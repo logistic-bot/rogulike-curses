@@ -12,7 +12,8 @@ MAX_MESSAGES = 10
 class State
   def initialize
     @map = Map.new
-    @objects = []
+    @player = Player.new
+    @objects = [@player]
 
     @all_messages = []
     @current_messages = []
@@ -21,7 +22,7 @@ class State
     @screen_update_required = true
   end
 
-  def message(text, refresh=true)
+  def message(text)
     if @current_messages.last == text
       @current_messages_count[-1] += 1
     else
@@ -35,16 +36,28 @@ class State
       @current_messages_count = @current_messages_count.drop(1)
     end
 
-    @screen_update_required = true unless refresh == false
+    @screen_update_required = true
   end
 
   def debug(text)
     if DEBUG_MODE
       if DEBUG_MESSAGE
-        message("[dbg]> " + text, refresh=false)
+        message("[dbg]> " + text)
       end
       if DEBUG_LOG
         debug_log(text)
+      end
+    end
+  end
+
+  def info(text)
+    if DEBUG_MODE
+      if DEBUG_MESSAGE
+        message("[info]> " + text)
+      end
+
+      if DEBUG_LOG
+        LOGGER.info(text)
       end
     end
   end

@@ -1,6 +1,7 @@
 require "curses"
 require 'pp'
 
+require "./player"
 require "./state"
 require "./render"
 require "./engine"

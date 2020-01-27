@@ -10,7 +10,6 @@ class CursesRenderer
     $messages = []
     $messages_count = []
 
-    @screen_update_required = true
     @last_screen_update = Time.now
 
     @state = state
@@ -22,6 +21,10 @@ class CursesRenderer
 
   def cleanup
     close_screen()
+  end
+
+  def info(text)
+    @state.info(text)
   end
 
   def debug(text)
