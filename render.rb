@@ -56,6 +56,11 @@ class CursesRenderer
 
     display_messages
 
+    for object in @state.objects
+      setpos(object.y, object.x)
+      addstr(object.representation)
+    end
+
     refresh
 
     @state.screen_update_required = false

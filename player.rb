@@ -5,4 +5,6 @@ class Player
 
     @representation = "@"
   end
+
+  attr_reader :x, :y, :representation
 end
