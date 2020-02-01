@@ -7,3 +7,6 @@ clean:
 
 debug:
 	bat log.log
+
+style:
+	@rubocop

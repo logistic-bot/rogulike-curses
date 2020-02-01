@@ -46,6 +46,14 @@ class CursesRenderer
     end
   end
 
+  def nb_cols
+    cols
+  end
+
+  def nb_lines
+    lines
+  end
+
   private
 
   def true_render
@@ -67,13 +75,6 @@ class CursesRenderer
     @last_screen_update = Time.now
   end
 
-  def nb_cols
-    cols
-  end
-
-  def nb_lines
-    lines
-  end
 
   def display_messages
     # we set the correct curses color

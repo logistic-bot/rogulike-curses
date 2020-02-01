@@ -62,8 +62,8 @@ class State
     end
   end
 
-  attr_reader :current_messages, :current_messages_count, :objects
-  attr_accessor :screen_update_required
+  attr_reader :current_messages, :current_messages_count, :objects, :player
+  attr_accessor :screen_update_required, :nb_lines, :nb_cols
 
   private
 
